@@ -1,19 +1,16 @@
-// server.ts
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import path from 'path';
 
 const app = express();
-const PORT = 3333;
 
 app.use(cors());
 app.use(express.json());
 
-// --- Servir arquivos estáticos (index.html, style.css, script.js) ---
-const publicPath = path.join(__dirname);
+// Servir frontend
+const publicPath = path.join(__dirname, '../');
 app.use(express.static(publicPath));
 
-// Rota raiz: abre o index.html
 app.get('/', (req: Request, res: Response) => {
   res.sendFile(path.join(publicPath, 'index.html'));
 });
@@ -184,6 +181,5 @@ app.get('/api/livro-razao/:contaId', (req: Request, res: Response) => {
   return res.status(200).json(resultado);
 });
 
-app.listen(PORT, () => {
-  console.log(`Servidor backend rodando na porta ${PORT}`);
-});
+export default app;
+
