@@ -7,6 +7,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const PORT = 3333;
+app.listen(PORT, () => {
+  console.log(`Servidor rodando em http://localhost:${PORT}`);
+});
+
 // Servir frontend
 const publicPath = path.join(__dirname, '../');
 app.use(express.static(publicPath));
@@ -183,9 +188,3 @@ app.get('/api/livro-razao/:contaId', (req: Request, res: Response) => {
 
 export default app;
 
-if (process.env.NODE_ENV !== 'production') {
-  const PORT = 3333;
-  app.listen(PORT, () => {
-    console.log(`Servidor rodando em http://localhost:${PORT}`);
-  });
-}
