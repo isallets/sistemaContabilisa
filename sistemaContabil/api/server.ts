@@ -20,6 +20,8 @@ app.get('/', (req: Request, res: Response) => {
   res.sendFile(path.join(publicPath, 'index.html'));
   res.sendFile(path.join(publicPath, 'style.css'));
   res.sendFile(path.join(publicPath, 'script.js'));
+  res.sendFile(path.join(publicPath, '/dist/server.js'));
+
 });
 
 // --- Tipos e Banco de Dados em Memória ---
