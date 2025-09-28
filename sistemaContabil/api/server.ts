@@ -12,7 +12,7 @@ const publicPath = path.join(__dirname, '../');
 app.use(express.static(publicPath));
 
 app.get('/', (req: Request, res: Response) => {
-  res.sendFile(path.join(publicPath, '/index.html'));
+  res.sendFile(path.join(publicPath, '../index.html'));
 });
 
 // --- Tipos e Banco de Dados em Memória ---
