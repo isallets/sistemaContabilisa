@@ -7,20 +7,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const PORT = 3333;
-app.listen(PORT, () => {
-  console.log(`Servidor rodando em http://localhost:${PORT}`);
-});
-
 // Servir frontend
 const publicPath = path.join(__dirname, '../');
 app.use(express.static(publicPath));
 
 app.get('/', (req: Request, res: Response) => {
-  res.sendFile(path.join(publicPath, 'index.html'));
-  res.sendFile(path.join(publicPath, 'style.css'));
-  res.sendFile(path.join(publicPath, 'script.js'));
-  res.sendFile(path.join(publicPath, '/dist/server.js'));
+  res.sendFile(path.join(process.cwd(), 'index.html'));
+  res.sendFile(path.join(process.cwd(), 'script.js'));
+  res.sendFile(path.join(process.cwd(), 'style.css'));
 
 });
 
@@ -191,4 +185,3 @@ app.get('/api/livro-razao/:contaId', (req: Request, res: Response) => {
 });
 
 export default app;
-
