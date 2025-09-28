@@ -12,7 +12,7 @@ const publicPath = path.join(__dirname, '../');
 app.use(express.static(publicPath));
 
 app.get('/', (req: Request, res: Response) => {
-  res.sendFile(path.join(publicPath, 'index.html'));
+  res.sendFile(path.join(publicPath, '../index.html'));
 });
 
 // --- Tipos e Banco de Dados em Memória ---
@@ -183,3 +183,9 @@ app.get('/api/livro-razao/:contaId', (req: Request, res: Response) => {
 
 export default app;
 
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = 3333;
+  app.listen(PORT, () => {
+    console.log(`Servidor rodando em http://localhost:${PORT}`);
+  });
+}
