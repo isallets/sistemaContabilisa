@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contab'Isa - Sistema Contábil</title>
   <link rel="stylesheet" href="/style.css">
-  <script src="script.js"></script>
+  <script src="script.js" defer></script>
 </head>
 <body>
   <div class="app-container">
@@ -18,12 +18,12 @@
         <li data-page="livro-diario">Livro Diário</li>
         <li data-page="livro-razao">Livro Razão</li> 
         <li data-page="balancete">Balanço Patrimonial</li>
-        </ul>
       </ul>
     </aside>
 
     <main class="main-content">
       
+      <!-- SETUP DE CONTAS -->
       <section id="page-setup" class="page active">
         <header>
           <h1>Setup de Contas Contábeis</h1>
@@ -47,6 +47,7 @@
         </div>
       </section>
 
+      <!-- LIVRO DIÁRIO -->
       <section id="page-livro-diario" class="page">
         <header>
           <h1>Livro Diário - Lançamentos</h1>
@@ -88,6 +89,7 @@
         </div>
       </section>
 
+      <!-- BALANÇO PATRIMONIAL -->
       <section id="page-balancete" class="page">
         <header>
           <h1>Balanço Patrimonial</h1>
@@ -95,21 +97,20 @@
         <div class="container">
           <div class="toolbar">
             <button id="btnGerarBalanco">Gerar Balanço</button>
-            <span style="margin-left: 1rem;">Data de Referência: <strong>12/09/2025</strong></span>
+            <span style="margin-left: 1rem;">Data de Referência: <strong id="data-referencia"></strong></span>
           </div>
-      
           <div id="balanco-container" class="balanco-container">
             <div id="lado-ativo" class="balanco-lado">
               <div class="balanco-header">ATIVO</div>
-              </div>
-            
+            </div>
             <div id="lado-passivo-pl" class="balanco-lado">
               <div class="balanco-header">PASSIVO E PATRIMÔNIO LÍQUIDO</div>
-              </div>
+            </div>
           </div>
         </div>
       </section>
 
+      <!-- LIVRO RAZÃO -->
       <section id="page-livro-razao" class="page">
         <header>
           <h1>Livro Razão</h1>
@@ -120,7 +121,6 @@
             <select id="filtro-conta-razao" style="flex-grow: 1;"></select>
             <button id="btnGerarRazao">Gerar Razão</button>
           </div>
-
           <div id="resultado-razao" style="margin-top: 2rem; display: none;">
             <h2 id="nome-conta-razao" style="margin-bottom: 1rem;"></h2>
             <table>
@@ -133,10 +133,8 @@
                   <th>Saldo (R$)</th>
                 </tr>
               </thead>
-              <tbody id="tabela-razao-corpo">
-                </tbody>
-              <tfoot id="tabela-razao-rodape">
-                </tfoot>
+              <tbody id="tabela-razao-corpo"></tbody>
+              <tfoot id="tabela-razao-rodape"></tfoot>
             </table>
           </div>
         </div>
@@ -145,6 +143,7 @@
     </main>
   </div>
 
+  <!-- MODAL NOVA CONTA -->
   <div id="modal-nova-conta" class="modal">
     <div class="modal-content">
       <span class="close-button">&times;</span>
@@ -165,7 +164,5 @@
       </form>
     </div>
   </div>
-
-  <script src="script.js"></script>
 </body>
 </html>
