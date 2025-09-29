@@ -12,7 +12,8 @@
   "dependencies": {
     "@vercel/node": "^5.3.24",
     "cors": "^2.8.5",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "firebase-admin": "^13.5.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
