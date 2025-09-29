@@ -13,6 +13,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const selectContaCredito = document.getElementById('conta-credito');
   const filtroContaRazao = document.getElementById('filtro-conta-razao');
 
+  // Elementos de navegação
+  const menuItems = document.querySelectorAll('.menu li');
+  const pages = document.querySelectorAll('.page');
+
+  // --- FUNÇÃO DE NAVEGAÇÃO ---
+  function showPage(pageId) {
+    pages.forEach(p => p.classList.remove('active'));
+    menuItems.forEach(i => i.classList.remove('active'));
+
+    const page = document.getElementById(`page-${pageId}`);
+    if (page) page.classList.add('active');
+
+    const menuItem = document.querySelector(`.menu li[data-page="${pageId}"]`);
+    if (menuItem) menuItem.classList.add('active');
+  }
+
   // --- FUNÇÕES DE CONTAS ---
   async function carregarContas() {
     try {
@@ -84,8 +100,23 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Inicialização
-  btnAdicionar.addEventListener('click', toggleModal);
-  btnFecharModal.addEventListener('click', toggleModal);
-  carregarContas().then(popularDropdownsContas);
+  // --- INICIALIZAÇÃO ---
+  function inicializar() {
+    // Navegação
+    menuItems.forEach(item =>
+      item.addEventListener('click', () => showPage(item.dataset.page))
+    );
+
+    // Botões do modal
+    btnAdicionar.addEventListener('click', toggleModal);
+    btnFecharModal.addEventListener('click', toggleModal);
+
+    // Carregar dados iniciais
+    carregarContas().then(popularDropdownsContas);
+
+    // Abre a primeira página por padrão
+    showPage('setup');
+  }
+
+  inicializar();
 });
