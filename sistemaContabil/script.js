@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const API_URL = '/api';
   let todasAsContas = [];
 
-  // Elementos principais
+  // --- ELEMENTOS PRINCIPAIS ---
   const tabelaContasCorpo = document.getElementById('tabela-contas-corpo');
   const modal = document.getElementById('modal-nova-conta');
   const btnAdicionar = document.getElementById('btnAdicionarConta');
@@ -13,23 +13,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const selectContaCredito = document.getElementById('conta-credito');
   const filtroContaRazao = document.getElementById('filtro-conta-razao');
 
-  // Elementos de navegação
+  // --- ELEMENTOS: Livro Diário ---
+  const formNovoLancamento = document.getElementById('form-novo-lancamento');
+  const tabelaLancamentosCorpo = document.getElementById('tabela-lancamentos-corpo');
+
+  // --- NAVEGAÇÃO ---
   const menuItems = document.querySelectorAll('.menu li');
   const pages = document.querySelectorAll('.page');
 
-  // --- FUNÇÃO DE NAVEGAÇÃO ---
   function showPage(pageId) {
     pages.forEach(p => p.classList.remove('active'));
     menuItems.forEach(i => i.classList.remove('active'));
-
-    const page = document.getElementById(`page-${pageId}`);
-    if (page) page.classList.add('active');
-
-    const menuItem = document.querySelector(`.menu li[data-page="${pageId}"]`);
-    if (menuItem) menuItem.classList.add('active');
+    document.getElementById(`page-${pageId}`)?.classList.add('active');
+    document.querySelector(`.menu li[data-page="${pageId}"]`)?.classList.add('active');
   }
 
-  // --- FUNÇÕES DE CONTAS ---
+  // --- CONTAS ---
   async function carregarContas() {
     try {
       const response = await fetch(`${API_URL}/contas`);
@@ -55,7 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
     modal.style.display = (modal.style.display === 'block') ? 'none' : 'block';
   }
 
-  // --- CRIAR CONTA ---
   formNovaConta.addEventListener('submit', async e => {
     e.preventDefault();
     const novaConta = {
@@ -100,21 +98,65 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // --- LANÇAMENTOS ---
+  async function carregarLancamentos() {
+    try {
+      const response = await fetch(`${API_URL}/lancamentos`);
+      const lancamentos = await response.json();
+      tabelaLancamentosCorpo.innerHTML = '';
+
+      lancamentos.forEach(l => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${l.data}</td>
+          <td>${l.historico}</td>
+          <td>${l.nomeContaDebito}</td>
+          <td>${l.nomeContaCredito}</td>
+          <td>${l.valor.toFixed(2)}</td>
+        `;
+        tabelaLancamentosCorpo.appendChild(tr);
+      });
+    } catch (e) {
+      console.error('Erro ao carregar lançamentos:', e);
+    }
+  }
+
+  formNovoLancamento.addEventListener('submit', async e => {
+    e.preventDefault();
+    const novoLancamento = {
+      contaDebitoId: document.getElementById('conta-debito').value,
+      contaCreditoId: document.getElementById('conta-credito').value,
+      valor: document.getElementById('valor').value,
+      historico: document.getElementById('historico').value
+    };
+
+    try {
+      const response = await fetch(`${API_URL}/lancamentos`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(novoLancamento)
+      });
+      if (!response.ok) throw new Error('Erro ao salvar lançamento');
+
+      formNovoLancamento.reset();
+      await carregarLancamentos();
+    } catch (e) {
+      console.error('Erro ao salvar lançamento:', e);
+      alert('Não foi possível salvar o lançamento.');
+    }
+  });
+
   // --- INICIALIZAÇÃO ---
   function inicializar() {
-    // Navegação
     menuItems.forEach(item =>
       item.addEventListener('click', () => showPage(item.dataset.page))
     );
-
-    // Botões do modal
     btnAdicionar.addEventListener('click', toggleModal);
     btnFecharModal.addEventListener('click', toggleModal);
 
-    // Carregar dados iniciais
     carregarContas().then(popularDropdownsContas);
+    carregarLancamentos();
 
-    // Abre a primeira página por padrão
     showPage('setup');
   }
 
