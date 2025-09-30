@@ -54,6 +54,17 @@ const criarContasPadrao = async () => {
 };
 criarContasPadrao();
 
+const groupBy = (array: any[], key: string) => {
+  return array.reduce((result, currentValue) => {
+    const groupKey = currentValue[key] || 'Sem Subgrupo';
+    if (!result[groupKey]) {
+      result[groupKey] = [];
+    }
+    result[groupKey].push(currentValue);
+    return result;
+  }, {});
+};
+
 // --- ROTAS CONTAS ---
 app.get("/api/contas", async (req: Request, res: Response) => {
   const snapshot = await db.ref("contas").once("value");
