@@ -1,10 +1,22 @@
-// VERSÃO 100% FUNCIONAL COM ARRAYS EM MEMÓRIA
-
-import express, { Request, Response } from 'express';
-import cors from 'cors';
+import express, { Request, Response } from "express";
+import cors from "cors";
+import path from "path";
+import { db } from "../firebase";
 
 const app = express();
-const PORT = 3333;
+
+app.use(cors());
+app.use(express.json());
+
+// Servir frontend
+const publicPath = path.join(__dirname, "../");
+app.use(express.static(publicPath));
+
+app.get("/", (req: Request, res: Response) => {
+  res.sendFile(path.join(process.cwd(), "index.html"));
+  res.sendFile(path.join(process.cwd(), "style.css"));
+  res.sendFile(path.join(process.cwd(), "script.js"));
+});
 
 app.use(cors());
 app.use(express.json());
@@ -100,6 +112,4 @@ app.get("/api/livro-razao/:contaId", (req: Request, res: Response) => {
     return res.status(200).json({ conta: contaSelecionada, movimentos, totalDebito, totalCredito, saldoFinal: totalDebito - totalCredito });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Servidor backend rodando na porta ${PORT}`);
-});
+export default app;
