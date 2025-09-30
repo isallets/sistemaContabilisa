@@ -156,6 +156,8 @@ document.addEventListener('DOMContentLoaded', () => {
     );
     btnAdicionar.addEventListener('click', toggleModal);
     btnFecharModal.addEventListener('click', toggleModal);
+    btnGerarBalanco.addEventListener('click', gerarBalanco);
+    btnGerarRazao.addEventListener('click', gerarRelatorioRazao);  
 
     carregarContas().then(popularDropdownsContas);
     carregarLancamentos();
