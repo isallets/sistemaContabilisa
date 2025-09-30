@@ -151,22 +151,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function gerarRelatorioRazao() {
     const contaId = filtroContaRazao.value;
+    console.log("Clique detectado - Conta selecionada:", contaId); // 👈 ADICIONE ISSO
+  
     if (!contaId) {
-     alert("Selecione uma conta para gerar o razão.");
-     return;
+      alert("Selecione uma conta para gerar o razão.");
+      return;
     }
-    // Chamada à API ou geração de relatório
+  
     fetch(`${API_URL}/livro-razao/${contaId}`)
-     .then(response => response.json())
-     .then(dados => {
-      console.log("Razão da conta:", dados);
-      // Aqui você pode exibir os dados em uma tabela, modal, etc.
-     })
-     .catch(e => {
-      console.error("Erro ao gerar razão:", e);
-      alert("Erro ao gerar razão.");
-     });
-   }
+      .then(response => response.json())
+      .then(dados => {
+        console.log("Razão da conta:", dados);
+      })
+      .catch(e => {
+        console.error("Erro ao gerar razão:", e);
+        alert("Erro ao gerar razão.");
+      });
+  }
+  
    
    function gerarBalanco() {
     fetch(`${API_URL}/balanco-patrimonial`)
