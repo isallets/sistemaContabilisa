@@ -230,6 +230,9 @@ document.addEventListener('DOMContentLoaded', () => {
       chavesSubgrupos.forEach(chaveSubgrupo => {
         if (chaveSubgrupo && chaveSubgrupo !== 'undefined' && chaveSubgrupo.trim() !== '') { html += `<div class="balanco-conta"><span>&nbsp;&nbsp;<strong>${chaveSubgrupo}</strong></span><span></span></div>`;}
         const contas = subgrupos[chaveSubgrupo];
+
+        console.log("Variável 'contas' que será renderizada:", contas); 
+
         const resultadoContas = renderizarContas(contas, grupoPai);
         html += resultadoContas.html; total += resultadoContas.total;
       });
