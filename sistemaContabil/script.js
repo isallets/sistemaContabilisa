@@ -149,6 +149,38 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  function gerarRelatorioRazao() {
+    const contaId = filtroContaRazao.value;
+    if (!contaId) {
+     alert("Selecione uma conta para gerar o razão.");
+     return;
+    }
+    // Chamada à API ou geração de relatório
+    fetch(`${API_URL}/livro-razao/${contaId}`)
+     .then(response => response.json())
+     .then(dados => {
+      console.log("Razão da conta:", dados);
+      // Aqui você pode exibir os dados em uma tabela, modal, etc.
+     })
+     .catch(e => {
+      console.error("Erro ao gerar razão:", e);
+      alert("Erro ao gerar razão.");
+     });
+   }
+   
+   function gerarBalanco() {
+    fetch(`${API_URL}/balanco-patrimonial`)
+     .then(response => response.json())
+     .then(dados => {
+      console.log("Balanço:", dados);
+      // Aqui você pode exibir os dados em uma tabela, modal, etc.
+     })
+     .catch(e => {
+      console.error("Erro ao gerar balanço:", e);
+      alert("Erro ao gerar balanço.");
+     });
+   }
+
   // --- INICIALIZAÇÃO ---
   function inicializar() {
     menuItems.forEach(item =>
@@ -168,35 +200,5 @@ document.addEventListener('DOMContentLoaded', () => {
   inicializar();
 });
 
-function gerarRelatorioRazao() {
-   const contaId = filtroContaRazao.value;
-   if (!contaId) {
-    alert("Selecione uma conta para gerar o razão.");
-    return;
-   }
-   // Chamada à API ou geração de relatório
-   fetch(`${API_URL}/razao/${contaId}`)
-    .then(response => response.json())
-    .then(dados => {
-     console.log("Razão da conta:", dados);
-     // Aqui você pode exibir os dados em uma tabela, modal, etc.
-    })
-    .catch(e => {
-     console.error("Erro ao gerar razão:", e);
-     alert("Erro ao gerar razão.");
-    });
-  }
-  
-  function gerarBalanco() {
-   fetch(`${API_URL}/balanco`)
-    .then(response => response.json())
-    .then(dados => {
-     console.log("Balanço:", dados);
-     // Aqui você pode exibir os dados em uma tabela, modal, etc.
-    })
-    .catch(e => {
-     console.error("Erro ao gerar balanço:", e);
-     alert("Erro ao gerar balanço.");
-    });
-  }
+
   
