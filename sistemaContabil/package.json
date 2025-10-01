@@ -1,14 +1,9 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "main": "api/server.ts",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only api/server.ts",
-    "build": "tsc && shx cp .env dist/ && shx cp -r src dist/"
+    "dev": "ts-node-dev --respawn --transpile-only api/server.ts"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "@vercel/node": "^5.3.24",
     "cors": "^2.8.5",
