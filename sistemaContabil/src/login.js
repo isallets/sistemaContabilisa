@@ -1,7 +1,7 @@
 // frontend/login.js
 
 // Importa o 'auth' do nosso arquivo de configuração
-import { auth } from './firebase-config.js';
+import { auth } from '../firebase-config.js';
 // Importa as funções de login do Firebase
 import { GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
 

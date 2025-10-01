@@ -1,7 +1,7 @@
 import * as admin from 'firebase-admin';
 import * as dotenv from 'dotenv';
 dotenv.config();
-
+console.log(process.env.FIREBASE_PROJECT_ID);
 if (!process.env.FIREBASE_PROJECT_ID ||
     !process.env.FIREBASE_CLIENT_EMAIL ||
     !process.env.FIREBASE_PRIVATE_KEY ||
