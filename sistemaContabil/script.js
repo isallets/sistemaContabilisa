@@ -1,4 +1,19 @@
+import { auth } from './firebase-config.js';
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+
 document.addEventListener('DOMContentLoaded', () => {
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+        // Usuário está logado! Mostra o nome no console.
+        console.log("Acesso permitido para:", user.displayName);
+    } else {
+        // Usuário não está logado! Redireciona para a tela de login.
+        console.log("Acesso negado. Redirecionando para login...");
+        window.location.href = 'login.html';
+    } 
+  });
+
   const API_URL = '/api';
   let todasAsContas = [];
 
@@ -211,34 +226,87 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function renderizarContas(contas, grupoPai) {
-    let html = ''; let total = 0;
-    contas.forEach(conta => {
-      const saldoExibicao = (grupoPai === 'Ativo') ? conta.saldo : conta.saldo * -1;
-      html += `<div class="balanco-conta"><span>&nbsp;&nbsp;&nbsp;&nbsp;${conta.nome_conta}</span><span>${saldoExibicao.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span></div>`;
-      total += saldoExibicao;
+  // Função para renderizar contas e retornar HTML e soma dos saldos
+function renderizarContasLista(contas, grupoPai) {
+  let html = '';
+  let total = 0;
+  
+  contas.forEach(conta => {
+    html += `<div class="balanco-conta"><span>${conta.nome_conta}</span><span>${conta.saldo.toFixed(2)}</span></div>`;
+    total += conta.saldo;
+  });
+
+  return { html, total };
+}
+
+// Função que usa a função acima para renderizar grupos e subgrupos
+function renderizarGrupos(grupos, grupoPai) {
+  let html = '';
+  let total = 0;
+  const chavesGrupos = Object.keys(grupos);
+
+  chavesGrupos.forEach(chaveGrupo => {
+    html += `<div class="balanco-grupo-titulo">${chaveGrupo}</div>`;
+    const subgrupos = grupos[chaveGrupo];
+    const chavesSubgrupos = Object.keys(subgrupos);
+
+    chavesSubgrupos.forEach(chaveSubgrupo => {
+      if (chaveSubgrupo && chaveSubgrupo.trim() !== '') {
+        html += `<div class="balanco-subgrupo-titulo">&nbsp;&nbsp;<strong>${chaveSubgrupo}</strong></div>`;
+      }
+      let contas = subgrupos[chaveSubgrupo];
+      
+      if (!Array.isArray(contas)) {
+        if (contas && typeof contas === 'object') {
+          contas = [contas];  // transforma objeto único em array com 1 elemento
+        } else {
+          console.warn('Contas não é um array nem objeto válido, ignorando:', contas);
+          contas = [];
+        }
+      }
+
+      const resultadoContas = renderizarContasLista(contas, grupoPai);
+      html += resultadoContas.html;
+      total += resultadoContas.total;
     });
-    return { html, total };
+  });
+
+  return { html, total };
+}
+
+
+// Função async para buscar dados e renderizar o balanço
+async function renderizarContas() {
+  const response = await fetch('/api/balanco-patrimonial');
+  if (!response.ok) {
+    console.error("Erro ao buscar balanco patrimonial");
+    return;
   }
+  const data = await response.json();
 
-  function renderizarGrupos(grupos, grupoPai) {
-    let html = ''; let total = 0;
-    const chavesGrupos = Object.keys(grupos);
-    chavesGrupos.forEach(chaveGrupo => {
-      html += `<div class="balanco-grupo-titulo">${chaveGrupo}</div>`;
-      const subgrupos = grupos[chaveGrupo]; const chavesSubgrupos = Object.keys(subgrupos);
-      chavesSubgrupos.forEach(chaveSubgrupo => {
-        if (chaveSubgrupo && chaveSubgrupo !== 'undefined' && chaveSubgrupo.trim() !== '') { html += `<div class="balanco-conta"><span>&nbsp;&nbsp;<strong>${chaveSubgrupo}</strong></span><span></span></div>`;}
-        const contas = subgrupos[chaveSubgrupo];
+  const container = document.getElementById('balanco-container');
+  container.innerHTML = '';
 
-        console.log("Variável 'contas' que será renderizada:", contas); 
+  // Renderiza Ativo
+  const ativoResultado = renderizarGrupos(data.ativo, 'ativo');
+  const ladoAtivo = document.createElement('div');
+  ladoAtivo.classList.add('balanco-lado');
+  ladoAtivo.innerHTML = `<div class="balanco-header">ATIVO</div>` + ativoResultado.html;
 
-        const resultadoContas = renderizarContas(contas, grupoPai);
-        html += resultadoContas.html; total += resultadoContas.total;
-      });
-    });
-    return { html, total };
-  }
+  // Renderiza Passivo e Patrimônio Líquido
+  const passivoPlResultado = renderizarGrupos({
+    ...data.passivo,
+    "Patrimônio Líquido": data.patrimonioLiquido
+  }, 'passivo-pl');
+
+  const ladoPassivoPl = document.createElement('div');
+  ladoPassivoPl.classList.add('balanco-lado');
+  ladoPassivoPl.innerHTML = `<div class="balanco-header">PASSIVO E PATRIMÔNIO LÍQUIDO</div>` + passivoPlResultado.html;
+
+  container.appendChild(ladoAtivo);
+  container.appendChild(ladoPassivoPl);
+}
+
    
   async function gerarBalancoPatrimonial() {
     try {
@@ -274,7 +342,26 @@ document.addEventListener('DOMContentLoaded', () => {
     carregarLancamentos();
 
     showPage('setup');
+
+    const btnLogout = document.getElementById('btn-logout');
+    if (btnLogout) {
+        btnLogout.addEventListener('click', () => {
+            signOut(auth).then(() => {
+                console.log("Logout bem-sucedido.");
+                // A página irá recarregar e o "porteiro" fará o redirecionamento.
+            }).catch(error => {
+                console.error("Erro no logout:", error);
+            });
+        });
+    }
   }
+  if (dataReferenciaElement) {
+    const hoje = new Date();
+    const dia = String(hoje.getDate()).padStart(2, '0');
+    const mes = String(hoje.getMonth() + 1).padStart(2, '0'); // Mês começa em 0, então somamos 1
+    const ano = hoje.getFullYear();
+    dataReferenciaElement.textContent = `${dia}/${mes}/${ano}`;
+}
 
   inicializar();
 });
