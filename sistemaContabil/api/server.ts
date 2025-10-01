@@ -3,6 +3,24 @@ import cors from "cors";
 import path from "path";
 import { db } from "../firebase";
 
+// Adicione esta função no seu server.ts, depois dos imports
+/*
+const verificarToken = async (req: Request, res: Response, next: Function) => {
+    const token = req.headers.authorization?.split('Bearer ')[1];
+
+    if (!token) {
+        return res.status(401).send('Acesso negado. Nenhum token fornecido.');
+    }
+
+    try {
+        const decodedToken = await admin.auth().verifyIdToken(token);
+        (req as any).user = decodedToken; // Anexa os dados do usuário na requisição
+        next(); // Permite que a requisição continue para a próxima função
+    } catch (error) {
+        return res.status(403).send('Token inválido.');
+    }
+};
+*/
 const app = express();
 const PORT = process.env.PORT || 3333;
 
