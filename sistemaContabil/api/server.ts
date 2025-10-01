@@ -23,7 +23,7 @@ const verificarToken = async (req: Request, res: Response, next: Function) => {
 };
 */
 const app = express();
-
+const PORT = process.env.PORT || 3333;
 console.log("Esta mensagem aparece no terminal do sistema.");
 app.use(cors());
 app.use(express.json());
@@ -190,4 +190,8 @@ app.get("/api/balanco-patrimonial", async (req: Request, res: Response) => {
     // Livro Razão 
     app.get("/api/livro-razao/:contaId", async (req: Request, res: Response) => { const contaId = parseInt(req.params.contaId, 10); const contasSnap = await db.ref("contas").once("value"); const lancSnap = await db.ref("lancamentos").once("value"); const contas: Conta[] = contasSnap.val() ? Object.values(contasSnap.val()) : []; const lancamentos: Lancamento[] = lancSnap.val() ? Object.values(lancSnap.val()) : []; const contaSelecionada = contas.find(c => c.id === contaId); if (!contaSelecionada) return res.status(404).json({ message: "Conta não encontrada" }); const movimentos = lancamentos .filter(l => l.contaDebitoId === contaId || l.contaCreditoId === contaId) .map(l => ({ data: l.data, historico: l.historico, debito: l.contaDebitoId === contaId ? l.valor : 0, credito: l.contaCreditoId === contaId ? l.valor : 0, })); const totalDebito = movimentos.reduce((s, m) => s + m.debito, 0); const totalCredito = movimentos.reduce((s, m) => s + m.credito, 0); const saldoFinal = totalDebito - totalCredito; return res.status(200).json({ conta: contaSelecionada, movimentos, totalDebito, totalCredito, saldoFinal, }); }); 
     
+    app.listen(PORT, () => {
+      console.log(`🚀 Servidor backend rodando na porta ${PORT}`);
+    });
+
     export default app;
