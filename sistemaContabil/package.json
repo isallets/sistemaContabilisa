@@ -4,7 +4,7 @@
   "main": "api/server.ts",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only api/server.ts",
-    "build": "tsc && copy .env dist\\.env  && xcopy src dist\\src /E /I /Y"
+    "build": "tsc && shx cp .env dist/ && shx cp -r src dist/"
   },
   "keywords": [],
   "author": "",
