@@ -37,7 +37,6 @@ exports.db = void 0;
 const admin = __importStar(require("firebase-admin"));
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
-console.log(process.env.FIREBASE_PROJECT_ID);
 if (!process.env.FIREBASE_PROJECT_ID ||
     !process.env.FIREBASE_CLIENT_EMAIL ||
     !process.env.FIREBASE_PRIVATE_KEY ||
