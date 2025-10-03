@@ -8,6 +8,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const publicPath = path.join(__dirname, "../"); 
+app.use(express.static(publicPath));
+
 app.get("/", (req: Request, res: Response) => 
   { res.sendFile(path.join(process.cwd(), "index.html")); 
   res.sendFile(path.join(process.cwd(), "style.css")); 
