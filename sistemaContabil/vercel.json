@@ -7,6 +7,7 @@
     { "src": "/api/(.*)", "dest": "/api/server.ts" },
     { "src": "/", "dest": "/index.html" },
     { "src": "/login", "dest": "/login.html" },
-    { "src": "/index", "dest": "/index.html" }
+    { "src": "/index", "dest": "/index.html" },
+    { "src": "/(.*)", "dest": "/$1" }
   ]
 }

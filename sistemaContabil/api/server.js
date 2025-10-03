@@ -7,24 +7,7 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const path_1 = __importDefault(require("path"));
 const firebase_1 = require("../firebase");
-// Adicione esta função no seu server.ts, depois dos imports
-/*
-const verificarToken = async (req: Request, res: Response, next: Function) => {
-    const token = req.headers.authorization?.split('Bearer ')[1];
 
-    if (!token) {
-        return res.status(401).send('Acesso negado. Nenhum token fornecido.');
-    }
-
-    try {
-        const decodedToken = await admin.auth().verifyIdToken(token);
-        (req as any).user = decodedToken; // Anexa os dados do usuário na requisição
-        next(); // Permite que a requisição continue para a próxima função
-    } catch (error) {
-        return res.status(403).send('Token inválido.');
-    }
-};
-*/
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3333;
 app.use((0, cors_1.default)());
