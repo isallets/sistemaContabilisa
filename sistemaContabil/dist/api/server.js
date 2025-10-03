@@ -7,7 +7,24 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const path_1 = __importDefault(require("path"));
 const firebase_1 = require("../firebase");
+// Adicione esta função no seu server.ts, depois dos imports
+/*
+const verificarToken = async (req: Request, res: Response, next: Function) => {
+    const token = req.headers.authorization?.split('Bearer ')[1];
 
+    if (!token) {
+        return res.status(401).send('Acesso negado. Nenhum token fornecido.');
+    }
+
+    try {
+        const decodedToken = await admin.auth().verifyIdToken(token);
+        (req as any).user = decodedToken; // Anexa os dados do usuário na requisição
+        next(); // Permite que a requisição continue para a próxima função
+    } catch (error) {
+        return res.status(403).send('Token inválido.');
+    }
+};
+*/
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3333;
 app.use((0, cors_1.default)());
@@ -66,7 +83,7 @@ app.post("/api/contas", async (req, res) => {
         subgrupo2,
     };
     await ref.set(novaConta);
-    return res.status(201).json(novaConta);
+    return res.status(201).json(novaConta); // ✅ devolve a conta criada
 });
 // --- ROTAS PARA LANÇAMENTOS --- 
 app.get("/api/lancamentos", async (req, res) => {
@@ -149,6 +166,6 @@ app.get("/api/balanco-patrimonial", async (req, res) => {
 app.get("/api/livro-razao/:contaId", async (req, res) => { const contaId = parseInt(req.params.contaId, 10); const contasSnap = await firebase_1.db.ref("contas").once("value"); const lancSnap = await firebase_1.db.ref("lancamentos").once("value"); const contas = contasSnap.val() ? Object.values(contasSnap.val()) : []; const lancamentos = lancSnap.val() ? Object.values(lancSnap.val()) : []; const contaSelecionada = contas.find(c => c.id === contaId); if (!contaSelecionada)
     return res.status(404).json({ message: "Conta não encontrada" }); const movimentos = lancamentos.filter(l => l.contaDebitoId === contaId || l.contaCreditoId === contaId).map(l => ({ data: l.data, historico: l.historico, debito: l.contaDebitoId === contaId ? l.valor : 0, credito: l.contaCreditoId === contaId ? l.valor : 0, })); const totalDebito = movimentos.reduce((s, m) => s + m.debito, 0); const totalCredito = movimentos.reduce((s, m) => s + m.credito, 0); const saldoFinal = totalDebito - totalCredito; return res.status(200).json({ conta: contaSelecionada, movimentos, totalDebito, totalCredito, saldoFinal, }); });
 app.listen(PORT, () => {
-    console.log(`Servidor backend rodando na porta ${PORT}`);
+    console.log(`🚀 Servidor backend rodando na porta ${PORT}`);
 });
 exports.default = app;
