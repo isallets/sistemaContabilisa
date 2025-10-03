@@ -1,11 +1,19 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
+import path from "path";
 import { db } from "../firebase";
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+app.get("/", (req: Request, res: Response) => 
+  { res.sendFile(path.join(process.cwd(), "index.html")); 
+  res.sendFile(path.join(process.cwd(), "style.css")); 
+  res.sendFile(path.join(process.cwd(), "script.js")); 
+  res.sendFile(path.join(process.cwd(), "login.html")); 
+  res.sendFile(path.join(process.cwd(), "login.js")); });
 
 // --- Tipos ---
 interface Conta {
